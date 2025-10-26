@@ -2,6 +2,8 @@
 /* eslint-disable */
 export declare function clearLangCache(): void
 
+export declare function generateTypescriptDefs(dir: string, output: string): void
+
 export declare function loadChdlang(dir: string): object
 
 export declare function loadLang(path: string): object

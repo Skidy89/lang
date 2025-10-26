@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/lang",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "language loader for node.js using rust!",
   "keywords": [
     "language",

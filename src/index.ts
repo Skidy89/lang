@@ -1,4 +1,5 @@
-import { clearLangCache, loadChdlang } from "../index";
+import { clearLangCache, generateTypescriptDefs, loadChdlang } from "../index";
+import { Langs } from "../types/langs";
 import { LangCollection } from "../types/types";
 
 /** SSL.js */
@@ -11,9 +12,12 @@ export class SSL {
     }
 
     /** Loads language data, caching the loader function */
-    public async load(): Promise<LangCollection | null> {
+    public async load<T>(): Promise<T | null> {
         if (!this._loader) this._loader = loadChdlang;
-        return await this._loader(this._dir)! as LangCollection | null;
+        return await this._loader(this._dir)! as T | null;
+    }
+    public async generateTypescriptDefs(output: string): Promise<void> {
+        return generateTypescriptDefs(this._dir, output);
     }
 
     /** Clears the global language cache */

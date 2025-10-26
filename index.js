@@ -5,3 +5,4 @@ module.exports.loadLangs = d.loadLangs
 module.exports.loadChdlang = d.loadChdlang
 module.exports.clearLangCache = d.clearLangCache
 module.exports.SSL = l.SSL
+module.exports.generateTypescriptDefs = d.generateTypescriptDefs

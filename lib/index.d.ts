@@ -1,12 +1,12 @@
 import { loadChdlang } from "../index";
-import { LangCollection } from "../types/types";
 /** SSL.js */
 export declare class SSL {
     private _dir;
     private _loader;
     constructor(dir: string);
     /** Loads language data, caching the loader function */
-    load(): Promise<LangCollection | null>;
+    load<T>(): Promise<T | null>;
+    generateTypescriptDefs(output: string): Promise<void>;
     /** Clears the global language cache */
     clearCache(): void;
     /** Returns the current loader function */
