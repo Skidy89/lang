@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "@napi-rs/cli": "^3.4.0",
-    "lang-helper": "github:skidy89/simple-language-loader"
+    "@skidy89/ssl.js": "^1.0.4"
   }
 }
