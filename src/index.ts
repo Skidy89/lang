@@ -1,4 +1,4 @@
-import { clearLangCache, LangCollection, loadChdlang } from "..";
+import { clearLangCache, LangCollection, loadChdlang } from "../lang";
 
 /** SSL.js */
 export class SSL {

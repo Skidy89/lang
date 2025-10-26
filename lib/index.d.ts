@@ -1,10 +1,11 @@
-import { loadChdlang } from "..";
+import { LangCollection, loadChdlang } from "../lang";
+/** SSL.js */
 export declare class SSL {
     private _dir;
     private _loader;
     constructor(dir: string);
     /** Loads language data, caching the loader function */
-    load(): Promise<import("..").LangMap | null>;
+    load(): Promise<LangCollection | null>;
     /** Clears the global language cache */
     clearCache(): void;
     /** Returns the current loader function */
