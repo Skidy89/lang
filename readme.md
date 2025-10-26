@@ -1,84 +1,69 @@
-@skidy89/lang - Node Native Language Bindings (N-API)
-====================================================
+# @skidy89/lang - simple language loader (SLL)
 
-This package provides a small native addon and TypeScript types for working
-with the `lang` native module built with Rust + N-API.
+![npm](https://img.shields.io/npm/v/@skidy89/lang) ![License](https://img.shields.io/npm/l/@skidy89/lang) ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 
-----------------------------------------------------
-Install
-----------------------------------------------------
-Install from npm:
+A lightweight Node.js package that provides a native N-API addon built with Rust and TypeScript type definitions for loading and parsing `.lang` files.
 
+This module enables developers to manage multilingual applications by loading key-value pairs from `.lang` files stored in a specified directory.
+
+---
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Node.js](#nodejs)
+  - [TypeScript](#typescript)
+- [Example .lang File](#example-lang-file)
+- [Building the Package](#building-the-package)
+- [Publishing to npm](#publishing-to-npm)
+- [Package Contents](#package-contents)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [Notes](#notes)
+
+---
+
+## Installation
+
+Install the package via npm:
+
+```bash
 npm install @skidy89/lang
+```
 
-----------------------------------------------------
-Usage (Node.js)
-----------------------------------------------------
-const lang = require('@skidy89/lang'); 
-const cli = new lang.SSL("./languages"); // Change to your directory (must contain .lang files)
-const langData = await cli.load();
+Ensure you have Node.js (version 12 or higher) installed, as this package relies on N-API for native module support.
 
-// Example
-console.log(langData["es"]["hello-world"]);
-
-- "es" is the filename of the .lang file
-- "hello-world" is the key
-
-----------------------------------------------------
-Example lang file
-----------------------------------------------------
-# Use "#" for comments
-hello-world = "hello world!!"
-
-----------------------------------------------------
-Usage (TypeScript)
-----------------------------------------------------
+## usage
+Load and parse .lang files using the native SSL class:
+```typescript
 import { SSL } from '@skidy89/lang';
-const cli = new SSL("./languages");
-const langData = await cli.load();
 
-----------------------------------------------------
-Build
-----------------------------------------------------
-This project builds a native N-API addon. Build locally with:
+const cli = new SSL('./languages');
+async function loadLanguages() {
+  try {
+    const langData = await cli.load();
+    console.log(langData['es']['hello-world']); // Outputs: "hello world!!"
+  } catch (err) {
+    console.error('Error loading languages:', err);
+  }
+}
+loadLanguages();
+```
 
-npm run build
+## example lang file! 
+Create .lang files in your specified directory (e.g., ./languages/es.lang). The format supports key-value pairs with # for comments!
+```lang
+# this is ignored, write whatever you want!!
+hello-world = "¡Hola mundo!"
+welcome = "Bienvenido"
+```
+Files must have the .lang extension.
+Keys and values are separated by =.
+Comments start with #.
 
-This runs `napi build --release` (from @napi-rs/cli) and then `tsc` to emit type definitions.
+## Building the Package and benchmarks
+> [!WARNING]
+> *work in progress*
 
-----------------------------------------------------
-Publish
-----------------------------------------------------
-Before publishing, bump the version in package.json and ensure `lang.node` and
-the generated `.d.ts` files are present.
 
-Validate package contents locally:
-
-npm pack
-
-Publish to npm (public scoped package):
-
-npm publish --access public
-
-If using an unscoped name, update the `name` field in package.json accordingly.
-For scoped public packages, ensure `publishConfig.access` is set to `public`.
-
-----------------------------------------------------
-Files included in the package
-----------------------------------------------------
-- lang.node (native addon)
-- index.js (JS wrapper)
-- index.d.ts (TypeScript declarations)
-- lib/ (supporting JS/TS files)
-
-----------------------------------------------------
-License
-----------------------------------------------------
-MIT
-
-----------------------------------------------------
-Notes
-----------------------------------------------------
-- Simple language loader (sll.js)
-- This project is a WIP (work in progress)
-- Please be patient while methods are updated
