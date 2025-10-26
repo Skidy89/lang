@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/lang",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "description": "language loader for node.js using rust!",
   "keywords": [
     "language",
@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "@napi-rs/cli": "^3.4.0",
-    "@skidy89/ssl.js": "^1.0.4"
+    "@skidy89/ssl.js": "^1.0.5"
   }
 }

@@ -10,11 +10,11 @@ export class SSL {
     }
 
     /** Loads language data, caching the loader function */
-    public async load<T>(): Promise<T | null> {
+    public load<T>(): T | null {
         if (!this._loader) this._loader = loadChdlang;
-        return await this._loader(this._dir)! as T | null;
+        return this._loader(this._dir)! as T | null;
     }
-    public async generateTypescriptDefs(output: string): Promise<void> {
+    public generateTypescriptDefs(output: string): void {
         return generateTypescriptDefs(this._dir, output);
     }
 

@@ -5,8 +5,8 @@ export declare class SSL {
     private _loader;
     constructor(dir: string);
     /** Loads language data, caching the loader function */
-    load<T>(): Promise<T | null>;
-    generateTypescriptDefs(output: string): Promise<void>;
+    load<T>(): T | null;
+    generateTypescriptDefs(output: string): void;
     /** Clears the global language cache */
     clearCache(): void;
     /** Returns the current loader function */
