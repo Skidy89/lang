@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/lang",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "language loader for node.js using rust!",
   "keywords": [
     "language",
@@ -18,7 +18,6 @@
     "build": "napi build --release && tsc",
     "prepublishOnly": "npm run build",
     "prepack": "npm run build"
-    
   },
   "napi": {
     "name": "lang"
