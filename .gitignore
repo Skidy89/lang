@@ -1,0 +1,8 @@
+/target
+/package-lock.json
+/node_modules
+/.env
+/node
+/languages
+test.js
+langx.js

@@ -1,0 +1,141 @@
+use napi_derive::napi;
+use napi::{Env, JsObject, Result, Error};
+use once_cell::sync::Lazy;
+use rayon::prelude::*;
+use std::{
+    collections::HashMap,
+    fs, io::{self, BufRead},
+    path::Path,
+    sync::RwLock,
+};
+
+type LangCache = HashMap<String, HashMap<String, String>>;
+static LANG_CACHE: Lazy<RwLock<Option<LangCache>>> = Lazy::new(|| RwLock::new(None));
+
+#[napi]
+pub fn load_lang(env: Env, path: String) -> Result<JsObject> {
+    let path = Path::new(&path);
+    if !path.is_file() {
+        return Err(Error::from_reason(format!("Path '{}' is not a file", path.display())));
+    }
+
+    let file = fs::File::open(&path)
+        .map_err(|e| Error::from_reason(format!("Cannot open file '{}': {}", path.display(), e)))?;
+    let reader = io::BufReader::new(file);
+    let mut map = HashMap::with_capacity(256);
+
+    for line in reader.lines() {
+        let line = line.map_err(|e| Error::from_reason(e.to_string()))?;
+        let line = line.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        if let Some(pos) = line.find('=') {
+            let key = line[..pos].trim();
+            let value = line[pos + 1..].trim().trim_matches('"');
+            if !key.is_empty() {
+                map.insert(key.to_string(), value.to_string());
+            }
+        }
+    }
+
+    let mut js = env.create_object()?;
+    for (k, v) in map {
+        js.set_named_property(&k, env.create_string(&v)?)?;
+    }
+    Ok(js)
+}
+
+pub fn validate_path_is_dir(dir: &str) -> Result<&Path> {
+    let dirpath = Path::new(dir);
+    if !dirpath.is_dir() {
+        return Err(Error::from_reason(format!("Path '{}' is not a directory", dir)));
+    }
+    Ok(dirpath)
+}
+
+pub fn validate_files(files: &Path) -> Result<Vec<std::path::PathBuf>> {
+    let fl: Vec<_> = fs::read_dir(files)
+        .map_err(|e| Error::from_reason(e.to_string()))?
+        .filter_map(|entry| {
+            let entry = entry.ok()?;
+            let path = entry.path();
+            if path.extension()? == "lang" {
+                Some(path)
+            } else {
+                None
+            }
+        })
+        .collect();
+    Ok(fl)
+}
+
+fn load_lang_dsk(dir: &str) -> Result<LangCache> {
+    let dirpath = validate_path_is_dir(dir)?;
+    let files = validate_files(dirpath)?;
+    let results: LangCache = files
+        .par_iter()
+        .filter_map(|path| {
+            let name = path.file_stem()?.to_string_lossy().to_string();
+            let data = fs::read_to_string(path).ok()?;
+            let mut map = HashMap::with_capacity(256);
+            for line in data.lines() {
+                let line = line.trim();
+                if line.is_empty() || line.starts_with('#') {
+                    continue;
+                }
+                if let Some(pos) = line.find('=') {
+                    let key = line[..pos].trim();
+                    let value = line[pos + 1..].trim().trim_matches('"');
+                    if !key.is_empty() {
+                        map.insert(key.to_string(), value.to_string());
+                    }
+                }
+            }
+            Some((name, map))
+        })
+        .collect();
+    Ok(results)
+}
+
+#[napi]
+pub fn load_langs(env: Env, dir: String) -> Result<JsObject> {
+    let results = load_lang_dsk(&dir)?;
+    to_js(env, &results)
+}
+
+#[napi]
+pub fn load_chdlang(env: Env, dir: String) -> Result<JsObject> {
+    {
+        let cache = LANG_CACHE.read().unwrap();
+        if let Some(cached) = &*cache {
+            return to_js(env, cached);
+        }
+    }
+
+    let langs = load_lang_dsk(&dir)?;
+    {
+        let mut cache = LANG_CACHE.write().unwrap();
+        *cache = Some(langs.clone());
+    }
+
+    to_js(env, &langs)
+}
+
+fn to_js(env: Env, langs: &LangCache) -> Result<JsObject> {
+    let mut root = env.create_object()?;
+    for (lang, kv_map) in langs {
+        let mut obj = env.create_object()?;
+        for (k, v) in kv_map {
+            obj.set_named_property(k, env.create_string(v)?)?;
+        }
+        root.set_named_property(lang, obj)?;
+    }
+    Ok(root)
+}
+
+#[napi]
+pub fn clear_lang_cache() {
+    let mut cache = LANG_CACHE.write().unwrap();
+    *cache = None;
+}
