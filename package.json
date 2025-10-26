@@ -15,19 +15,13 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "napi build --release && tsc",
+    "build": "tsc",
     "prepublishOnly": "npm run build",
     "prepack": "npm run build"
   },
-  "napi": {
-    "name": "lang"
-  },
   "files": [
-    "index.js",
-    "index.d.ts",
     "lib/*",
-    "types/*",
-    "*.node"
+    "types/*"
   ],
   "publishConfig": {
     "access": "public"
@@ -36,6 +30,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@napi-rs/cli": "^3.4.0"
+    "@napi-rs/cli": "^3.4.0",
+    "lang-helper": "github:skidy89/simple-language-loader"
   }
 }
