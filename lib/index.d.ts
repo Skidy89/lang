@@ -1,4 +1,4 @@
-import { loadChdlang } from "../index";
+import { loadChdlang } from "lang-helper";
 /** SSL.js */
 export declare class SSL {
     private _dir;
