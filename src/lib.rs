@@ -1,5 +1,5 @@
 use napi_derive::napi;
-use napi::{Env, JsObject, Result, Error};
+use napi::{bindgen_prelude::{JsObjectValue, Object}, Env, Error, Result};
 use once_cell::sync::Lazy;
 use rayon::prelude::*;
 use std::{
@@ -13,7 +13,7 @@ type LangCache = HashMap<String, HashMap<String, String>>;
 static LANG_CACHE: Lazy<RwLock<Option<LangCache>>> = Lazy::new(|| RwLock::new(None));
 
 #[napi]
-pub fn load_lang(env: Env, path: String) -> Result<JsObject> {
+pub fn load_lang(env: &Env, path: String) -> Result<Object<'_>> {
     let path = Path::new(&path);
     if !path.is_file() {
         return Err(Error::from_reason(format!("Path '{}' is not a file", path.display())));
@@ -39,7 +39,7 @@ pub fn load_lang(env: Env, path: String) -> Result<JsObject> {
         }
     }
 
-    let mut js = env.create_object()?;
+    let mut js = Object::new(&env)?;
     for (k, v) in map {
         js.set_named_property(&k, env.create_string(&v)?)?;
     }
@@ -99,13 +99,13 @@ fn load_lang_dsk(dir: &str) -> Result<LangCache> {
 }
 
 #[napi]
-pub fn load_langs(env: Env, dir: String) -> Result<JsObject> {
+pub fn load_langs(env: &Env, dir: String) -> Result<Object<'_>> {
     let results = load_lang_dsk(&dir)?;
     to_js(env, &results)
 }
 
 #[napi]
-pub fn load_chdlang(env: Env, dir: String) -> Result<JsObject> {
+pub fn load_chdlang(env: &Env, dir: String) -> Result<Object<'_>> {
     {
         let cache = LANG_CACHE.read().unwrap();
         if let Some(cached) = &*cache {
@@ -122,10 +122,10 @@ pub fn load_chdlang(env: Env, dir: String) -> Result<JsObject> {
     to_js(env, &langs)
 }
 
-fn to_js(env: Env, langs: &LangCache) -> Result<JsObject> {
-    let mut root = env.create_object()?;
+fn to_js<'a>(env: &'a Env, langs: &LangCache) -> Result<Object<'a>> {
+    let mut root = Object::new(env)?;
     for (lang, kv_map) in langs {
-        let mut obj = env.create_object()?;
+        let mut obj = Object::new(env)?;
         for (k, v) in kv_map {
             obj.set_named_property(k, env.create_string(v)?)?;
         }
@@ -133,6 +133,10 @@ fn to_js(env: Env, langs: &LangCache) -> Result<JsObject> {
     }
     Ok(root)
 }
+
+
+
+
 
 #[napi]
 pub fn clear_lang_cache() {

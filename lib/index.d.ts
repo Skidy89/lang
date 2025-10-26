@@ -1,4 +1,5 @@
-import { LangCollection, loadChdlang } from "../lang";
+import { loadChdlang } from "../index";
+import { LangCollection } from "../types/types";
 /** SSL.js */
 export declare class SSL {
     private _dir;

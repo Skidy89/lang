@@ -1,6 +1,6 @@
 {
   "name": "@skidy89/lang",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "language loader for node.js using rust!",
   "keywords": [
     "language",
@@ -11,8 +11,8 @@
   "license": "MIT",
   "author": "skidy89",
   "type": "commonjs",
-  "main": "lang.js",
-  "types": "lang.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "napi build --release && tsc",
@@ -23,11 +23,10 @@
     "name": "lang"
   },
   "files": [
-    "lang.node",
-    "lang.js",
-    "lang.d.ts",
-    "lib/",
-    "types/"
+    "index.js",
+    "index.d.ts",
+    "lib/*",
+    "types/*"
   ],
   "publishConfig": {
     "access": "public"
