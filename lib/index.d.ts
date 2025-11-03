@@ -8,7 +8,6 @@ export declare class SSL {
     /** Loads language data, caching the loader function */
     load<T>(): T | null;
     generateTypescriptDefs(output: string): void;
-    formatLang(): Promise<void>;
     /** Clears the global language cache */
     clearCache(): void;
     /** Returns the current loader function */
