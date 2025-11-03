@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "@napi-rs/cli": "^3.4.0",
-    "@skidy89/ssl.js": "^1.0.9"
+    "@skidy89/ssl.js": "^1.1.1"
   }
 }
