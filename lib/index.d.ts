@@ -1,4 +1,5 @@
 import { loadChdlang } from "@skidy89/ssl.js";
+import type { FmtLang } from "../types/types.js";
 /** SSL.js */
 export declare class SSL {
     private _dir;
@@ -7,6 +8,7 @@ export declare class SSL {
     /** Loads language data, caching the loader function */
     load<T>(): T | null;
     generateTypescriptDefs(output: string): void;
+    formatLang(): Promise<void>;
     /** Clears the global language cache */
     clearCache(): void;
     /** Returns the current loader function */
@@ -16,3 +18,4 @@ export declare class SSL {
     /** Update the directory used for loading language files */
     set directory(dir: string);
 }
+export declare const fmt_lang: FmtLang;

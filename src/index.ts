@@ -1,5 +1,5 @@
 import { clearLangCache, generateTypescriptDefs, loadChdlang } from "@skidy89/ssl.js";
-
+import type { FmtLang } from "../types/types.js";
 /** SSL.js */
 export class SSL {
     private _dir: string;
@@ -38,3 +38,26 @@ export class SSL {
         this._dir = dir;
     }
 }
+
+export const fmt_lang: FmtLang = (text, args): string => {
+  let result = '';
+  let i = 0;
+  while (i < text.length) {
+    const start = text.indexOf('{', i);
+    if (start === -1) {
+      result += text.slice(i);
+      break;
+    }
+    result += text.slice(i, start);
+    const end = text.indexOf('}', start + 1);
+    if (end === -1) {
+      result += text.slice(start);
+      break;
+    }
+    const key = text.slice(start + 1, end);
+    result += (args as Record<string, string>)[key] ?? `{${key}}`;
+    i = end + 1;
+  }
+  return result;
+}
+
